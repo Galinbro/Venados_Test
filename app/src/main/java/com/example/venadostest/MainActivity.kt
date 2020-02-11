@@ -3,6 +3,7 @@ package com.example.venadostest
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -12,15 +13,16 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.beust.klaxon.Klaxon
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.*
+
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, GamesFragment.OnFragmentInteractionListener, StatisticsFragment.OnFragmentInteractionListener, PLayersFragment.OnFragmentInteractionListener {
 
-    var jsonGames:String = ""
+    var jsonGames: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +40,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
+
+        //loading data
+
+        //val url = "https://venados.dacodes.mx/api/games"
+       // AsyncTaskHandle().execute(url)
+
+
     }
 
     override fun onBackPressed() {
@@ -70,17 +79,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         var Myfragment : Fragment = GamesFragment()
         var fragmentSelected = false
+        val args = Bundle()
 
         when (item.itemId) {
             R.id.nav_home -> {
-                Myfragment = GamesFragment()
+
                 fragmentSelected = true
                 //val url = "http://mysafeinfo.com/api/data?list=presidents&format=json"
                 val url = "https://venados.dacodes.mx/api/games"
 
                 AsyncTaskHandle().execute(url)
 
-                var jsonToObject = jsonGames
+                Handler().postDelayed({
+                    var x = jsonGames.split("{\"success\":true,\"data\":").toTypedArray()
+                    var y = x[1].split(",\"code\":200}}").toTypedArray()
+                    var z = y[0]+"}"
+
+                    Myfragment = GamesFragment.newInstance(z,z)
+                    //Log.d("key",gamesObject!!.games[0].opponent )
+                }, 1000)
+
 
             }
             R.id.nav_sta -> {
@@ -101,10 +119,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        if (fragmentSelected){
-            supportFragmentManager.beginTransaction().replace(R.id.content_main, Myfragment).commit()
-        }
-
+        Handler().postDelayed({
+            if (fragmentSelected){
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, Myfragment).commit()
+            }
+        }, 1050)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
@@ -126,9 +145,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             try {
                 connection.connect()
                 text = connection.inputStream.use { it.reader().use { reader -> reader.readText() } }
-            }catch (e: Exception) {
-                Log.d("Error with task: ", e.printStackTrace().toString())
-                text = e.printStackTrace().toString()
             }finally {
                 connection.disconnect()
             }

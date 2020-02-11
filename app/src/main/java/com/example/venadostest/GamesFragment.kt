@@ -3,10 +3,14 @@ package com.example.venadostest
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import com.beust.klaxon.Klaxon
+import kotlinx.android.synthetic.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -29,12 +33,19 @@ class GamesFragment : Fragment() {
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
 
+    data class GamesList (val games: List<Games>)
+    var gamesObject: GamesList? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        Log.d("key", param1)
+
+        gamesObject = Klaxon()
+            .parse<GamesList>(param1!!)
     }
 
     override fun onCreateView(
@@ -42,7 +53,12 @@ class GamesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_games, container, false)
+        val view = inflater.inflate(R.layout.fragment_games, container, false)
+
+        //val x = view.findViewById<TextView>(R.id.test)
+        //x.text = param1
+
+        return view
     }
 
     // TODO: Rename method, update argument and hook method into UI event
