@@ -9,7 +9,7 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="144dp">
 
         <TextView
                 android:paddingLeft="10dp"
@@ -24,20 +24,22 @@
         <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="89dp" android:paddingTop="10dp" android:paddingBottom="10dp">
+                android:layout_height="111dp" android:paddingTop="10dp" android:paddingBottom="10dp">
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="26dp"
                     android:layout_height="match_parent" android:layout_weight="1">
                 <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_menu_camera"
-                        android:id="@+id/imageView2" android:layout_weight="1" android:layout_gravity="center"/>
+                        android:layout_width="38dp"
+                        android:layout_height="10dp" app:srcCompat="@drawable/calendar"
+                        android:id="@+id/imgViewCalendar" android:layout_weight="1" android:layout_gravity="center"/>
                 <TextView
                         android:text="Fecha"
+                        android:textColor="@color/white"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" android:id="@+id/txtViewDate" android:layout_weight="1"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center" android:textSize="20sp" android:gravity="center"
+                        android:layout_gravity="center"/>
             </LinearLayout>
             <LinearLayout
                     android:orientation="vertical"
@@ -53,7 +55,8 @@
                         android:textColor="@color/white"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" android:id="@+id/txtViewHome" android:layout_weight="1"
-                        android:textSize="7sp" android:layout_gravity="center"/>
+                        android:textSize="17sp" android:layout_gravity="center" android:gravity="center"
+                        android:textStyle="bold"/>
             </LinearLayout>
             <TextView
                     android:text="0-0"
@@ -76,7 +79,8 @@
                         android:textColor="@color/white"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" android:id="@+id/txtViewAway" android:layout_weight="1"
-                        android:textSize="7sp" android:layout_gravity="center"/>
+                        android:textSize="17sp" android:layout_gravity="center" android:gravity="center"
+                        android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>
 

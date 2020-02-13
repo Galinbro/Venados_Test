@@ -18,14 +18,18 @@
                 android:layout_height="wrap_content">
             <Button
                     android:text="COPA MX"
-                    android:background="@color/cardview_light_background"
+                    android:background="@drawable/btn_light_green"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/button3" android:layout_weight="1"/>
+                    android:layout_height="wrap_content" android:id="@+id/btnCopa" android:layout_weight="1"/>
             <Button
                     android:text="ASCENSO MX"
-                    android:background="@color/cardview_light_background"
+                    android:background="@drawable/btn_unselected"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/button4" android:layout_weight="1"/>
+                    android:layout_height="wrap_content" android:id="@+id/btnAsc" android:layout_weight="1"/>
         </LinearLayout>
+        <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
     </LinearLayout>
 </TableLayout>

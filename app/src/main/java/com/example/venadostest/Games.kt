@@ -12,13 +12,29 @@ class Games {
     var home_score : Int = 0
     var away_score : Int = 0
 
-    fun add(l: Boolean, o: String, oImg: String, date: String, league: String, img: String, hScore: Int, aScore: Int)
+    constructor(){
+
+    }
+
+    constructor(l: Boolean, o: String, oImg: String, date: String, le: String, img: String, hScore: Int, aScore: Int)
+    {
+        this.local = l
+        this.opponent = o
+        this.opponent_image = oImg
+        this.datetime = date.substring(0,10)
+        this.league = le
+        this.image = img
+        this.home_score = hScore
+        this.away_score = aScore
+    }
+
+    fun add(l: Boolean, o: String, oImg: String, date: String, le: String, img: String, hScore: Int, aScore: Int)
     {
         this.local = l
         this.opponent = o
         this.opponent_image = oImg
         this.datetime = date
-        this.league = league
+        this.league = le
         this.image = img
         this.home_score = hScore
         this.away_score = aScore

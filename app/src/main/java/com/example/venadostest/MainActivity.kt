@@ -23,6 +23,7 @@ import java.net.URL
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, GamesFragment.OnFragmentInteractionListener, StatisticsFragment.OnFragmentInteractionListener, PLayersFragment.OnFragmentInteractionListener {
 
     var jsonGames: String = ""
+    var menu = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +44,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //loading data
 
-        //val url = "https://venados.dacodes.mx/api/games"
-       // AsyncTaskHandle().execute(url)
 
+        var Myfragment : Fragment = GamesFragment()
+        val url = "https://venados.dacodes.mx/api/games"
+
+        AsyncTaskHandle().execute(url)
+
+        Handler().postDelayed({
+
+            var x = jsonGames.split("{\"success\":true,\"data\":").toTypedArray()
+            var y = x[1].split(",\"code\":200}}").toTypedArray()
+            var z = y[0]+"}"
+
+            Myfragment = GamesFragment.newInstance(z,z)
+            supportFragmentManager.beginTransaction().replace(R.id.content_main, Myfragment).commit()
+
+        }, 3500)
+
+        /*Handler().postDelayed({
+
+        }, 2540)*/
 
     }
 
@@ -79,27 +97,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         var Myfragment : Fragment = GamesFragment()
         var fragmentSelected = false
-        val args = Bundle()
 
         when (item.itemId) {
             R.id.nav_home -> {
+                if (menu != 0){
+                    fragmentSelected = true
+                    //val url = "http://mysafeinfo.com/api/data?list=presidents&format=json"
+                    val url = "https://venados.dacodes.mx/api/games"
 
-                fragmentSelected = true
-                //val url = "http://mysafeinfo.com/api/data?list=presidents&format=json"
-                val url = "https://venados.dacodes.mx/api/games"
+                    AsyncTaskHandle().execute(url)
 
-                AsyncTaskHandle().execute(url)
+                    Handler().postDelayed({
 
-                Handler().postDelayed({
-                    var x = jsonGames.split("{\"success\":true,\"data\":").toTypedArray()
-                    var y = x[1].split(",\"code\":200}}").toTypedArray()
-                    var z = y[0]+"}"
+                        var x = jsonGames.split("{\"success\":true,\"data\":").toTypedArray()
+                        var y = x[1].split(",\"code\":200}}").toTypedArray()
+                        var z = y[0]+"}"
 
-                    Myfragment = GamesFragment.newInstance(z,z)
-                    //Log.d("key",gamesObject!!.games[0].opponent )
-                }, 1000)
-
-
+                        Myfragment = GamesFragment.newInstance(z,z)
+                        //Log.d("key",gamesObject!!.games[0].opponent )
+                    }, 1000)
+                }
             }
             R.id.nav_sta -> {
                 Myfragment = StatisticsFragment()
@@ -123,7 +140,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (fragmentSelected){
                 supportFragmentManager.beginTransaction().replace(R.id.content_main, Myfragment).commit()
             }
-        }, 1050)
+        }, 1000)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
