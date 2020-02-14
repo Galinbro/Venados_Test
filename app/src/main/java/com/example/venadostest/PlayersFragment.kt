@@ -3,10 +3,14 @@ package com.example.venadostest
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.beust.klaxon.Klaxon
+import org.json.JSONObject
+
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,11 +27,22 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class PLayersFragment : Fragment() {
+class PlayersFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
+
+    data class PlayerList (val x: List<Player>)
+
+    var playerObject: List<PlayerList>? = null
+
+    var forward: PlayerList? = null
+    var centers: PlayerList? = null
+    var coaches: PlayerList? = null
+    var defenses: PlayerList? = null
+    var goalkeepers: PlayerList? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +50,21 @@ class PLayersFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        var obj = JSONObject(param1)
+
+        obj.keys().forEach {
+            Log.d("keyyyy", it)
+        }
+
+        var x = obj.getString("team")
+
+        Log.d("key team:", x)
+
+
+
+        playerObject = Klaxon()
+            .parse<List<PlayerList>>(param1!!)
+
     }
 
     override fun onCreateView(
@@ -92,7 +122,7 @@ class PLayersFragment : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            PLayersFragment().apply {
+            PlayersFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

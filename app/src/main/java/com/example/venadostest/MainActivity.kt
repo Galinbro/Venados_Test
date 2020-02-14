@@ -15,15 +15,20 @@ import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.beust.klaxon.Klaxon
+import org.jetbrains.anko.toast
 import java.net.HttpURLConnection
 import java.net.URL
 
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, GamesFragment.OnFragmentInteractionListener, StatisticsFragment.OnFragmentInteractionListener, PLayersFragment.OnFragmentInteractionListener {
 
-    var jsonGames: String = ""
+
+
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, GamesFragment.OnFragmentInteractionListener, StatisticsFragment.OnFragmentInteractionListener, PlayersFragment.OnFragmentInteractionListener {
+
+    var jsonRequest: String = ""
     var menu = 0
+    var previous = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,19 +56,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         AsyncTaskHandle().execute(url)
 
         Handler().postDelayed({
-
-            var x = jsonGames.split("{\"success\":true,\"data\":").toTypedArray()
-            var y = x[1].split(",\"code\":200}}").toTypedArray()
-            var z = y[0]+"}"
-
-            Myfragment = GamesFragment.newInstance(z,z)
-            supportFragmentManager.beginTransaction().replace(R.id.content_main, Myfragment).commit()
+            Myfragment = GamesFragment.newInstance(clearJson(), clearJson())
+            supportFragmentManager.beginTransaction().add(R.id.content_main, Myfragment, "TAG_FRAGMENT_HOME").commit()
 
         }, 3500)
 
-        /*Handler().postDelayed({
-
-        }, 2540)*/
 
     }
 
@@ -97,10 +94,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         var Myfragment : Fragment = GamesFragment()
         var fragmentSelected = false
+        var tag = ""
 
         when (item.itemId) {
             R.id.nav_home -> {
                 if (menu != 0){
+                    tag = "TAG_FRAGMENT_HOME"
+                    previous = menu
+                    menu = 0
                     fragmentSelected = true
                     //val url = "http://mysafeinfo.com/api/data?list=presidents&format=json"
                     val url = "https://venados.dacodes.mx/api/games"
@@ -108,37 +109,52 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     AsyncTaskHandle().execute(url)
 
                     Handler().postDelayed({
-
-                        var x = jsonGames.split("{\"success\":true,\"data\":").toTypedArray()
-                        var y = x[1].split(",\"code\":200}}").toTypedArray()
-                        var z = y[0]+"}"
-
-                        Myfragment = GamesFragment.newInstance(z,z)
-                        //Log.d("key",gamesObject!!.games[0].opponent )
+                        Myfragment = GamesFragment.newInstance(clearJson(),clearJson())
                     }, 1000)
                 }
             }
             R.id.nav_sta -> {
-                Myfragment = StatisticsFragment()
-                fragmentSelected = true
+                if (menu != 1) {
+                    tag = "TAG_FRAGMENT_STA"
+                    previous = menu
+                    menu = 1
+                    Myfragment = StatisticsFragment()
+                    fragmentSelected = true
 
-                val url = "https://venados.dacodes.mx/api/statistics"
+                    val url = "https://venados.dacodes.mx/api/statistics"
 
-                AsyncTaskHandle().execute(url)
+                    AsyncTaskHandle().execute(url)
+
+                    Handler().postDelayed({
+                        Myfragment = StatisticsFragment.newInstance(clearJson(), clearJson())
+                    }, 1000)
+                }
             }
             R.id.nav_player -> {
-                Myfragment = StatisticsFragment()
-                fragmentSelected = true
+                if (menu != 2) {
+                    toast("Player")
+                    tag = "TAG_FRAGMENT_PLAYER"
+                    previous = menu
+                    menu = 2
+                    Myfragment = PlayersFragment()
+                    fragmentSelected = true
 
-                val url = "https://venados.dacodes.mx/api/players"
+                    val url = "https://venados.dacodes.mx/api/players"
 
-                AsyncTaskHandle().execute(url)
+                    AsyncTaskHandle().execute(url)
+
+                    Handler().postDelayed({
+                        Myfragment = PlayersFragment.newInstance(clearJson(), clearJson())
+                    }, 1000)
+                }
             }
         }
 
+        //previous()
+
         Handler().postDelayed({
             if (fragmentSelected){
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, Myfragment).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, Myfragment, tag).commit()
             }
         }, 1000)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -148,6 +164,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onFragmentInteraction(uri: Uri) {
 
+    }
+
+    fun previous(){
+        var tag = ""
+        when(previous){
+            0 ->{tag="TAG_FRAGMENT_HOME"}
+            1 ->{tag="TAG_FRAGMENT_STA"}
+            2 ->{tag="TAG_FRAGMENT_PLAYER"}
+        }
+        val fm = supportFragmentManager
+        val oldFragment = fm.findFragmentByTag(tag)
+        fm.beginTransaction().remove(oldFragment!!).commit()
+    }
+
+    fun clearJson(): String{
+        var x = jsonRequest.split("{\"success\":true,\"data\":").toTypedArray()
+        var y = x[1].split(",\"code\":200}}").toTypedArray()
+        var z = y[0]+"}"
+        return z
     }
 
     inner class AsyncTaskHandle : AsyncTask<String, String, String>(){
@@ -176,7 +211,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private fun handleResponse(result: String?) {
             Log.d("Get:", result)
             try {
-                jsonGames = result!!
+                jsonRequest = result!!
             }catch (e: java.lang.Exception){
                 Log.d("Json null: ", e.printStackTrace().toString())
             }
