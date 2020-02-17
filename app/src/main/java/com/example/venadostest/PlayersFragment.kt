@@ -17,6 +17,7 @@ import android.view.Gravity
 import android.graphics.drawable.ColorDrawable
 import android.graphics.Point
 import android.widget.*
+import kotlinx.android.synthetic.main.fragment_players.*
 import kotlinx.android.synthetic.main.popup_players.*
 import java.text.SimpleDateFormat
 
@@ -247,6 +248,7 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
 
 
             miVista!!.profile_image.setOnClickListener {
+
                 val popupView = layoutInflater.inflate(R.layout.popup_players, null)
                 val display = activity!!.windowManager.defaultDisplay
                 val size = Point()
@@ -303,6 +305,12 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
                     it, Gravity.CENTER_HORIZONTAL,
                     0, 0 /*+ it.getHeight()*/
                 )
+
+                gridView.setBackgroundColor(getResources().getColor(R.color.darkerGreen))
+
+                popupWindow.setOnDismissListener {
+                    gridView.setBackgroundColor(getResources().getColor(R.color.white))
+                }
             }
 
 
