@@ -265,7 +265,11 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
                 val name = popupView.findViewById(R.id.txtName) as TextView
                 val pos = popupView.findViewById<TextView>(R.id.txtPos)
                 name.text = game.name + " " + game.first_surname + " " + game.second_surname
-                pos.text = game.position
+
+                if (game.role!!.length>1)
+                    pos.text = game.role
+                else
+                    pos.text = game.position
 
                 var b = game.birthday.substring(0,10).split("-").toTypedArray()
 
