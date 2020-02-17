@@ -7,7 +7,9 @@
 
     <!-- TODO: Update blank fragment layout -->
     <GridView
+            android:paddingTop="15dp"
             android:id="@+id/gridView"
+            android:verticalSpacing="25dp"
             android:numColumns="3"
             android:layout_gravity="right"
             android:gravity="right"

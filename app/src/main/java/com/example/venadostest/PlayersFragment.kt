@@ -4,19 +4,21 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.GridView
-import android.widget.ListView
 import com.beust.klaxon.Klaxon
 import kotlinx.android.synthetic.main.mold_player.view.*
 import org.json.JSONObject
 import java.io.FileNotFoundException
 import java.util.concurrent.ExecutionException
+import android.view.Gravity
+import android.graphics.drawable.ColorDrawable
+import android.graphics.Point
+import android.widget.*
+import kotlinx.android.synthetic.main.popup_players.*
+import java.text.SimpleDateFormat
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -53,6 +55,8 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
 
     var players = arrayListOf<Player>()
     var myList: GridView? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -243,18 +247,62 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
 
 
             miVista!!.profile_image.setOnClickListener {
-                val date = game.datetime.split("-").toTypedArray()
-                val calDate = GregorianCalendar(date[0].toInt(), date[1].toInt()-1, date[2].toInt())
+                val popupView = layoutInflater.inflate(R.layout.popup_players, null)
+                val display = activity!!.windowManager.defaultDisplay
+                val size = Point()
+                display.getSize(size)
+                val width = size.x
+                val height = size.y
 
-                val calendarEvent = Calendar.getInstance()
-                val i = Intent(Intent.ACTION_EDIT)
-                i.type = "vnd.android.cursor.item/event"
-                i.putExtra("beginTime", calDate.getTimeInMillis())
-                i.putExtra("allDay", true)
-                i.putExtra("rule", "FREQ=YEARLY")
-                i.putExtra("endTime", calDate.getTimeInMillis() + 60 * 60 * 1000)
-                i.putExtra("title", "Venados F.C vs ${game.opponent}")
-                startActivity(i)
+                val popupWindow = PopupWindow(
+                    popupView
+                )
+                popupWindow.width = width-100
+                popupWindow.height = height-120
+
+                val name = popupView.findViewById(R.id.txtName) as TextView
+                val pos = popupView.findViewById<TextView>(R.id.txtPos)
+                name.text = game.name + " " + game.first_surname + " " + game.second_surname
+                pos.text = game.position
+
+                var b = game.birthday.substring(0,10).split("-").toTypedArray()
+
+                popupView.findViewById<TextView>(R.id.txtBir).text = b[2] + "/" + b[1] + "/" + b[0]
+                popupView.findViewById<TextView>(R.id.txtPlace).text = game.birth_place
+                popupView.findViewById<TextView>(R.id.txtW).text = game.weight.toString()
+                popupView.findViewById<TextView>(R.id.txtH).text = game.height.toString()
+                popupView.findViewById<TextView>(R.id.txtLT).text = game.last_team
+
+                val task = ImageDownloader()
+                val bitmap: Bitmap
+                try {
+                    bitmap = task.execute(game.image).get()
+
+                    popupView.findViewById<ImageView>(R.id.profile_image).setImageResource(0)
+                    popupView.findViewById<ImageView>(R.id.profile_image).setImageBitmap(bitmap)
+
+                } catch (e: ExecutionException) {
+                    e.printStackTrace()
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+
+                // If the PopupWindow should be focusable
+                popupWindow.isFocusable = true
+
+                // If you need the PopupWindow to dismiss when when touched outside
+                popupWindow.setBackgroundDrawable(ColorDrawable())
+
+                // Using location, the PopupWindow will be displayed right under anchorView
+                popupWindow.showAtLocation(
+                    it, Gravity.CENTER_HORIZONTAL,
+                    0, 0 /*+ it.getHeight()*/
+                )
             }
 
 
