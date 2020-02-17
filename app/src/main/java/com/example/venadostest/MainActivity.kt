@@ -14,21 +14,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import androidx.fragment.app.Fragment
-import com.beust.klaxon.Klaxon
 import org.jetbrains.anko.toast
 import java.net.HttpURLConnection
 import java.net.URL
 
 
-
-
-
-
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, GamesFragment.OnFragmentInteractionListener, StatisticsFragment.OnFragmentInteractionListener, PlayersFragment.OnFragmentInteractionListener {
 
-    var jsonRequest: String = ""
+    var jsonHome: String = ""
+    var jsonPlayer: String = ""
     var menu = 0
     var previous = 0
+    var count = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,16 +47,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //loading data
 
 
-        var Myfragment : Fragment = GamesFragment()
+        var Myfragment: Fragment
         val url = "https://venados.dacodes.mx/api/games"
-
+        val url2 = "https://venados.dacodes.mx/api/players"
         AsyncTaskHandle().execute(url)
-
         Handler().postDelayed({
-            Myfragment = GamesFragment.newInstance(clearJson(), clearJson())
+            AsyncTaskHandle().execute(url2)
+        }, 500)
+        Handler().postDelayed({
+            Myfragment = GamesFragment.newInstance(clearJson(jsonHome), clearJson(jsonHome))
             supportFragmentManager.beginTransaction().add(R.id.content_main, Myfragment, "TAG_FRAGMENT_HOME").commit()
 
-        }, 3500)
+        }, 2500)
 
 
     }
@@ -109,7 +108,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     AsyncTaskHandle().execute(url)
 
                     Handler().postDelayed({
-                        Myfragment = GamesFragment.newInstance(clearJson(),clearJson())
+                        Myfragment = GamesFragment.newInstance(clearJson(jsonHome),clearJson(jsonHome))
                     }, 1000)
                 }
             }
@@ -126,7 +125,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     AsyncTaskHandle().execute(url)
 
                     Handler().postDelayed({
-                        Myfragment = StatisticsFragment.newInstance(clearJson(), clearJson())
+                        Myfragment = StatisticsFragment.newInstance(clearJson(jsonPlayer), clearJson(jsonPlayer))
                     }, 1000)
                 }
             }
@@ -139,24 +138,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Myfragment = PlayersFragment()
                     fragmentSelected = true
 
-                    val url = "https://venados.dacodes.mx/api/players"
+                    Myfragment = PlayersFragment.newInstance(clearJson(jsonPlayer), clearJson(jsonPlayer))
 
-                    AsyncTaskHandle().execute(url)
-
-                    Handler().postDelayed({
-                        Myfragment = PlayersFragment.newInstance(clearJson(), clearJson())
-                    }, 1000)
                 }
             }
         }
 
         //previous()
 
-        Handler().postDelayed({
-            if (fragmentSelected){
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, Myfragment, tag).commit()
-            }
-        }, 1000)
+        if (fragmentSelected){
+            supportFragmentManager.beginTransaction().replace(R.id.content_main, Myfragment, tag).commit()
+        }
+
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
@@ -165,28 +158,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onFragmentInteraction(uri: Uri) {
 
     }
+    
 
-    fun previous(){
-        var tag = ""
-        when(previous){
-            0 ->{tag="TAG_FRAGMENT_HOME"}
-            1 ->{tag="TAG_FRAGMENT_STA"}
-            2 ->{tag="TAG_FRAGMENT_PLAYER"}
-        }
-        val fm = supportFragmentManager
-        val oldFragment = fm.findFragmentByTag(tag)
-        fm.beginTransaction().remove(oldFragment!!).commit()
-    }
-
-    fun clearJson(): String{
-        var x = jsonRequest.split("{\"success\":true,\"data\":").toTypedArray()
+    fun clearJson(json: String): String{
+        var x = json.split("{\"success\":true,\"data\":").toTypedArray()
         var y = x[1].split(",\"code\":200}}").toTypedArray()
         var z = y[0]+"}"
         return z
     }
 
     inner class AsyncTaskHandle : AsyncTask<String, String, String>(){
-
+        
         override fun doInBackground(vararg url: String?): String {
 
             var text : String
@@ -209,9 +191,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         private fun handleResponse(result: String?) {
-            Log.d("Get:", result)
             try {
-                jsonRequest = result!!
+                when(count){
+                    0 -> {jsonHome = result!!}
+                    1 -> {jsonPlayer = result!!}
+                }
+                count++
             }catch (e: java.lang.Exception){
                 Log.d("Json null: ", e.printStackTrace().toString())
             }

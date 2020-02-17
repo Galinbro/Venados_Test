@@ -1,7 +1,5 @@
 package com.example.venadostest
 
-import java.util.*
-
 class Games {
     var local : Boolean = false
     var opponent : String = ""

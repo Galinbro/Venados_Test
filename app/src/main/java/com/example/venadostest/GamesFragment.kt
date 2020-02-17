@@ -65,6 +65,8 @@ class GamesFragment(var adapter: GameAdapter? = null) : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
+        Log.d("Get", param1)
+
         gamesObject = Klaxon()
             .parse<GamesList>(param1!!)
 
