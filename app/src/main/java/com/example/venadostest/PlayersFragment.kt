@@ -306,10 +306,10 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
                     0, 0 /*+ it.getHeight()*/
                 )
 
-                gridView.setBackgroundColor(getResources().getColor(R.color.darkerGreen))
+                gridView.setBackgroundColor(resources.getColor(R.color.darkerGreen))
 
                 popupWindow.setOnDismissListener {
-                    gridView.setBackgroundColor(getResources().getColor(R.color.white))
+                    gridView.setBackgroundColor(resources.getColor(R.color.white))
                 }
             }
 
