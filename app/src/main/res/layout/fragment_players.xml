@@ -8,6 +8,9 @@
     <!-- TODO: Update blank fragment layout -->
     <GridView
             android:id="@+id/gridView"
+            android:numColumns="3"
+            android:layout_gravity="right"
+            android:gravity="right"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

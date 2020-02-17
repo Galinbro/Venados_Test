@@ -40,7 +40,16 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
 
     data class PlayerList (val forwards: List<Player>)
+    data class PlayerList2 (val centers: List<Player>)
+    data class PlayerList3 (val defenses: List<Player>)
+    data class PlayerList4 (val goalkeepers: List<Player>)
+    data class PlayerList5 (val coaches: List<Player>)
+
     var playerObject: PlayerList? = null
+    var playerObject2: PlayerList2? = null
+    var playerObject3: PlayerList3? = null
+    var playerObject4: PlayerList4? = null
+    var playerObject5: PlayerList5? = null
 
     var players = arrayListOf<Player>()
     var myList: GridView? = null
@@ -61,12 +70,22 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
 
         jsonTeam.keys().forEach { keys.add(it) }
 
-        var t = "{\"forwards\":" + jsonTeam.getString(keys[0]) + "}"
-
-        Log.d("Player", t)
+        var forw = "{\"forwards\":" + jsonTeam.getString(keys[0]) + "}"
+        var centers = "{\"centers\":" + jsonTeam.getString(keys[1]) + "}"
+        var defenses = "{\"defenses\":" + jsonTeam.getString(keys[2]) + "}"
+        var goalkeepers = "{\"goalkeepers\":" + jsonTeam.getString(keys[3]) + "}"
+        var coaches = "{\"coaches\":" + jsonTeam.getString(keys[4]) + "}"
 
         playerObject = Klaxon()
-            .parse<PlayerList>(t)
+            .parse<PlayerList>(forw)
+        playerObject2 = Klaxon()
+            .parse<PlayerList2>(centers)
+        playerObject3 = Klaxon()
+            .parse<PlayerList3>(defenses)
+        playerObject4 = Klaxon()
+            .parse<PlayerList4>(goalkeepers)
+        playerObject5 = Klaxon()
+            .parse<PlayerList5>(coaches)
 
     }
 
@@ -92,7 +111,18 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
         for (g in playerObject!!.forwards){
             players.add(Player(g.name, g.first_surname, g.second_surname, g.birthday, g.birth_place, g.weight!!, g.height!!, g.position!!, g.number!!, g.position_short!!, g.last_team!!, g.image))
         }
-
+        for (g in playerObject2!!.centers){
+            players.add(Player(g.name, g.first_surname, g.second_surname, g.birthday, g.birth_place, g.weight!!, g.height!!, g.position!!, g.number!!, g.position_short!!, g.last_team!!, g.image))
+        }
+        for (g in playerObject3!!.defenses){
+            players.add(Player(g.name, g.first_surname, g.second_surname, g.birthday, g.birth_place, g.weight!!, g.height!!, g.position!!, g.number!!, g.position_short!!, g.last_team!!, g.image))
+        }
+        for (g in playerObject4!!.goalkeepers){
+            players.add(Player(g.name, g.first_surname, g.second_surname, g.birthday, g.birth_place, g.weight!!, g.height!!, g.position!!, g.number!!, g.position_short!!, g.last_team!!, g.image))
+        }
+        for (g in playerObject5!!.coaches){
+            players.add(Player(g.name, g.first_surname, g.second_surname, g.birthday, g.birth_place, g.weight!!, g.height!!, g.role!!, g.role_short!!, g.image))
+        }
 
         adapter = PlayerAdapter(context!!, players)
 
@@ -175,8 +205,11 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
             //miVista!!.txtViewDate.text = game.datetime.split("-").toTypedArray().get(2) + " " + (SimpleDateFormat("yyyy-MM-dd").parse(game.datetime).toString().split(" ").toTypedArray().get(0))
 
 
+            if (game.role!!.length>1)
+                miVista!!.txtPos.text = game.role
+            else
+                miVista!!.txtPos.text = game.position
 
-            miVista!!.txtPos.text = game.position
             miVista!!.txtName.text = game.name + " " + game.first_surname
 
 
@@ -209,7 +242,7 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
             }
 
 
-            /*miVista!!.imgViewCalendar.setOnClickListener {
+            miVista!!.profile_image.setOnClickListener {
                 val date = game.datetime.split("-").toTypedArray()
                 val calDate = GregorianCalendar(date[0].toInt(), date[1].toInt()-1, date[2].toInt())
 
@@ -222,7 +255,7 @@ class PlayersFragment(var adapter: PlayerAdapter? = null) : Fragment() {
                 i.putExtra("endTime", calDate.getTimeInMillis() + 60 * 60 * 1000)
                 i.putExtra("title", "Venados F.C vs ${game.opponent}")
                 startActivity(i)
-            }*/
+            }
 
 
             return miVista

@@ -35,7 +35,7 @@ class Player {
         this.image = image
     }
 
-    /*constructor(n: String, fn: String, sn: String, b: String, bp: String, w: Float?, h: Float?, r: String, rs: String,img: String){
+    constructor(n: String, fn: String, sn: String, b: String, bp: String, w: Float?, h: Float?, r: String, rs: String,img: String){
         this.name = n
         this.first_surname = fn
         this.second_surname = sn
@@ -46,7 +46,7 @@ class Player {
         this.role = r
         this.role_short = rs
         this.image = img
-    }*/
+    }
 
 
     fun add(n: String, fn: String, sn: String, b: String, bp: String, w: Float, h: Float, p: String, num: Int, ps: String, lt: String, img: String){
