@@ -102,14 +102,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     previous = menu
                     menu = 0
                     fragmentSelected = true
-                    //val url = "http://mysafeinfo.com/api/data?list=presidents&format=json"
-                    val url = "https://venados.dacodes.mx/api/games"
 
-                    AsyncTaskHandle().execute(url)
+                    Myfragment = GamesFragment.newInstance(clearJson(jsonHome),clearJson(jsonHome))
 
-                    Handler().postDelayed({
-                        Myfragment = GamesFragment.newInstance(clearJson(jsonHome),clearJson(jsonHome))
-                    }, 1000)
                 }
             }
             R.id.nav_sta -> {
